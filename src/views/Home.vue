@@ -8,13 +8,20 @@
         <button v-on:click="addTask()">Add Task</button>
       </div>
     </div>
+    <div>
+      <h5>{{ numberOfIncompleteTasks() }} tasks left</h5>
+      <button @click="removeCompleted()">Clear Completed Tasks</button>
+    </div>
     <ul>
-      <li v-for="task in tasks" v-on:click="completeTask(task)">{{ task.text }}</li>
+      <li v-for="task in tasks" v-bind:class="{strike: task.completed}" v-on:click="completeTask(task)">{{ task.text }}</li>
     </ul>
   </div>
 </template>
 
 <style>
+.strike {
+  text-decoration: line-through;
+}
 </style>
 
 <script>
@@ -38,13 +45,37 @@ export default {
       }
     },
     completeTask: function(inputTask) {
-      var index = this.tasks.indexOf(inputTask);
-      this.tasks.splice(index, 1);
+      inputTask.completed = !inputTask.completed;
+    },
+    numberOfIncompleteTasks: function() {
+      var count = 0;
+      this.tasks.forEach(function(task) {
+        if (!task.completed) {
+          count++;
+        }
+      });
+      return count;
+    },
+    removeCompleted: function() {
+      var incompleteTasks = [];
+      for(var i = 0; i < this.tasks.length; i++) {
+        var task = this.tasks[i];
+
+        if (!task.completed) {
+          incompleteTasks.push(task);
+        }
+      }
+      this.tasks = incompleteTasks;
     }
   },
   computed: {}
 };
 </script>
+
+
+
+
+
 
 
 
